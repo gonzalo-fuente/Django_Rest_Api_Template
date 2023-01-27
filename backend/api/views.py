@@ -9,10 +9,10 @@ from products.serializers import ProductSerializer
 def api_home(request, *args, **kwargs):
 
     if request.method == 'GET':
-        instance = Product.objects.all().order_by("?").first()
+        instance = Product.objects.all()
         data = {}
         if instance:
-            data = ProductSerializer(instance).data
+            data = ProductSerializer(instance, many=True).data
         return Response(data)
 
     if request.method == 'POST':
