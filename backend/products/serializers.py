@@ -15,5 +15,12 @@ class ProductSerializer(serializers.ModelSerializer):
             'my_discount',
         ]
     
+
     def get_my_discount(self, obj):
+        # To avoid having an error when the data doesn't have the aggregated fields
+        if not hasattr(obj, 'id'):
+            return None
+        if not isinstance(obj, Product):
+            return None
+
         return obj.get_discount()
