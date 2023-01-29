@@ -1,17 +1,15 @@
-from rest_framework import authentication, generics, permissions
+from rest_framework import generics
 from rest_framework.decorators import api_view
-from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 
-from api.authentication import TokenAuthentication
+from api.mixins import StaffEditorPermissionMixin
 
 from .models import Product
-from .permissions import IsStaffEditorPermission
 from .serializers import ProductSerializer
 
 
 # --- Class based views ---
-class ProductCreateAPIView(generics.CreateAPIView):
+class ProductCreateAPIView(StaffEditorPermissionMixin, generics.CreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
@@ -26,14 +24,9 @@ class ProductCreateAPIView(generics.CreateAPIView):
 product_create_view = ProductCreateAPIView.as_view()
 
 
-class ProductListCreateAPIView(generics.ListCreateAPIView):
+class ProductListCreateAPIView(StaffEditorPermissionMixin, generics.ListCreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    authentication_classes = [
-        authentication.SessionAuthentication,
-        TokenAuthentication
-    ]
-    permission_classes = [permissions.IsAdminUser, IsStaffEditorPermission]
 
     def perform_create(self, serializer):
         title = serializer.validated_data.get('title')
@@ -46,7 +39,7 @@ class ProductListCreateAPIView(generics.ListCreateAPIView):
 product_list_create_view = ProductListCreateAPIView.as_view()
 
 
-class ProductDetailAPIView(generics.RetrieveAPIView):
+class ProductDetailAPIView(StaffEditorPermissionMixin, generics.RetrieveAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     # lookup_field = 'pk' ??
@@ -54,7 +47,7 @@ class ProductDetailAPIView(generics.RetrieveAPIView):
 product_detail_view = ProductDetailAPIView.as_view()
 
 
-class ProductListAPIView(generics.ListAPIView):
+class ProductListAPIView(StaffEditorPermissionMixin, generics.ListAPIView):
     '''
     Not gonna use this method
     '''
@@ -64,7 +57,7 @@ class ProductListAPIView(generics.ListAPIView):
 product_list_view = ProductListAPIView.as_view()
 
 
-class ProductUpdateAPIView(generics.UpdateAPIView):
+class ProductUpdateAPIView(StaffEditorPermissionMixin, generics.UpdateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     lookup_field = 'pk'
@@ -77,7 +70,7 @@ class ProductUpdateAPIView(generics.UpdateAPIView):
 product_update_view = ProductUpdateAPIView.as_view()
 
 
-class ProductDestroyAPIView(generics.DestroyAPIView):
+class ProductDestroyAPIView(StaffEditorPermissionMixin, generics.DestroyAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     lookup_field = 'pk'
