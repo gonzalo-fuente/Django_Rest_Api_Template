@@ -6,7 +6,6 @@ if (loginForm) {
 }
 
 function handleLogin(event) {
-  console.log(event);
   event.preventDefault();
   const loginEndpoint = `${baseEndpoint}/token/`;
   let loginFormData = new FormData(loginForm);
@@ -15,13 +14,12 @@ function handleLogin(event) {
   const options = {
     method: "POST",
     headers: {
-      "ContentType": "application/json",
+      "Content-Type": "application/json",
     },
     body: bodyStr,
   };
   fetch(loginEndpoint, options) //  Promise
     .then((response) => {
-      console.log(response);
       return response.json();
     })
     .then((data) => {
